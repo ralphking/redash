@@ -1,4 +1,4 @@
-import { map, trim } from "lodash";
+import { flatMap, map, trim } from "lodash";
 import React from "react";
 import PropTypes from "prop-types";
 import Tooltip from "antd/lib/tooltip";
@@ -12,6 +12,7 @@ export class TagsControl extends React.Component {
     onEdit: PropTypes.func,
     className: PropTypes.string,
     tagsExtra: PropTypes.node,
+    tagSeparator: PropTypes.node,
     children: PropTypes.node,
   };
 
@@ -22,6 +23,7 @@ export class TagsControl extends React.Component {
     onEdit: () => {},
     className: "",
     tagsExtra: null,
+    tagSeparator: null,
     children: null,
   };
 
@@ -52,11 +54,14 @@ export class TagsControl extends React.Component {
     return (
       <div className={"tags-control " + this.props.className} data-test="TagsControl">
         {this.props.children}
-        {map(this.props.tags, tag => (
+        {flatMap(this.props.tags, (tag, i) => [
           <span className="label label-tag" key={tag} title={tag} data-test="TagLabel">
             {tag}
-          </span>
-        ))}
+          </span>,
+          this.props.tagSeparator && i < this.props.tags.length - 1 && (
+            <span className="tag-separator">{this.props.tagSeparator}</span>
+          ),
+        ])}
         {this.props.canEdit && this.renderEditButton()}
         {this.props.tagsExtra}
       </div>
